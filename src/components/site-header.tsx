@@ -7,19 +7,21 @@ import { useEffect, useId, useRef, useState } from "react";
 import { Logo } from "@/components/logo";
 import { contact, navigation } from "@/content/site-content";
 
+function getFocusable(container: HTMLElement) {
+  return Array.from(
+    container.querySelectorAll<HTMLElement>(
+      'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])',
+    ),
+  ).filter((el) => !el.hasAttribute("disabled") && el.tabIndex !== -1);
+}
+
 export function SiteHeader() {
   const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [compact, setCompact] = useState(false);
-  const [navPath, setNavPath] = useState(pathname);
   const menuId = useId();
   const buttonRef = useRef<HTMLButtonElement>(null);
   const panelRef = useRef<HTMLDivElement>(null);
-
-  if (navPath !== pathname) {
-    setNavPath(pathname);
-    if (open) setOpen(false);
-  }
 
   useEffect(() => {
     const onScroll = () => setCompact(window.scrollY > 24);
@@ -28,22 +30,47 @@ export function SiteHeader() {
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- intentional reset on navigation
+    setOpen(false);
+  }, [pathname]);
+
   useEffect(() => {
     if (!open) return;
+
+    const panel = panelRef.current;
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+
+    const firstLink = panel?.querySelector<HTMLElement>("a");
+    firstLink?.focus();
 
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         setOpen(false);
         buttonRef.current?.focus();
+        return;
+      }
+
+      if (event.key !== "Tab" || !panel) return;
+
+      const focusable = getFocusable(panel);
+      if (focusable.length === 0) return;
+
+      const first = focusable[0];
+      const last = focusable[focusable.length - 1];
+
+      if (event.shiftKey && document.activeElement === first) {
+        event.preventDefault();
+        last.focus();
+      } else if (!event.shiftKey && document.activeElement === last) {
+        event.preventDefault();
+        first.focus();
       }
     };
 
-    const previousOverflow = document.body.style.overflow;
-    document.body.style.overflow = "hidden";
     document.addEventListener("keydown", onKeyDown);
-
-    const firstLink = panelRef.current?.querySelector<HTMLElement>("a");
-    firstLink?.focus();
 
     return () => {
       document.body.style.overflow = previousOverflow;
@@ -96,7 +123,7 @@ export function SiteHeader() {
           </ul>
           <a
             href={contact.phoneHref}
-            className="ml-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-4 text-base font-bold text-white transition-colors hover:bg-accent-dark"
+            className="ml-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-accent-dark px-4 text-base font-bold text-white transition-colors hover:bg-[#a83c2f]"
           >
             <Phone className="size-4 shrink-0" aria-hidden="true" />
             <span className="whitespace-nowrap">{contact.phoneDisplay}</span>
@@ -106,7 +133,7 @@ export function SiteHeader() {
         <div className="flex items-center gap-2 lg:hidden">
           <a
             href={contact.phoneHref}
-            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full bg-accent text-white hover:bg-accent-dark"
+            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full bg-accent-dark text-white hover:bg-[#a83c2f]"
             aria-label={`Anrufen: ${contact.phoneDisplay}`}
           >
             <Phone className="size-5" aria-hidden="true" />
@@ -156,7 +183,7 @@ export function SiteHeader() {
             </ul>
             <a
               href={contact.phoneHref}
-              className="mt-4 flex min-h-12 items-center justify-center gap-2 rounded-xl bg-accent px-4 text-lg font-bold text-white"
+              className="mt-4 flex min-h-12 items-center justify-center gap-2 rounded-xl bg-accent-dark px-4 text-lg font-bold text-white hover:bg-[#a83c2f]"
             >
               <Phone className="size-5" aria-hidden="true" />
               {contact.phoneDisplay}

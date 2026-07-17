@@ -5,13 +5,13 @@ type Variant = "primary" | "secondary" | "accent" | "ghost";
 
 const variants: Record<Variant, string> = {
   primary:
-    "bg-accent text-white hover:bg-accent-dark shadow-[0_8px_20px_-10px_rgba(232,93,76,0.7)]",
+    "bg-accent-dark text-white hover:bg-[#a83c2f] shadow-[0_8px_20px_-10px_rgba(201,72,56,0.75)]",
   secondary:
-    "bg-brand text-white hover:bg-brand-dark shadow-[0_8px_20px_-10px_rgba(18,168,184,0.55)]",
+    "bg-brand-dark text-white hover:bg-[#086570] shadow-[0_8px_20px_-10px_rgba(11,127,140,0.6)]",
   accent:
     "bg-highlight text-ink hover:bg-highlight-strong shadow-[0_8px_20px_-10px_rgba(240,196,46,0.55)]",
   ghost:
-    "bg-surface text-ink border-2 border-ink/15 hover:border-brand hover:text-brand-dark",
+    "bg-surface text-ink border-2 border-ink/15 hover:border-brand-dark hover:text-brand-dark",
 };
 
 type ButtonLinkProps = {

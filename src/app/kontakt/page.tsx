@@ -16,8 +16,8 @@ export const metadata: Metadata = createPageMetadata({
 });
 
 const pathwayStyles = [
-  "border-accent bg-[#fff4f1]",
-  "border-brand bg-surface-soft",
+  "border-accent-dark/40 bg-[#fff4f1]",
+  "border-brand-dark/40 bg-surface-soft",
   "border-highlight-strong bg-[#fff9e6]",
 ] as const;
 
@@ -31,7 +31,7 @@ export default function KontaktPage() {
           <p className="text-sm font-bold uppercase tracking-wide text-highlight">
             Kontakt
           </p>
-          <h1 className="mt-2 max-w-3xl font-display text-4xl font-extrabold tracking-tight sm:text-5xl">
+          <h1 className="mt-2 max-w-3xl font-display text-4xl font-extrabold tracking-tight text-white sm:text-5xl">
             {contactPage.title}
           </h1>
           <p className="mt-4 max-w-2xl text-lg text-white/85">{contactPage.intro}</p>
@@ -53,7 +53,7 @@ export default function KontaktPage() {
           id="pathways-heading"
           className="font-display text-3xl font-extrabold text-ink"
         >
-          Drei Wege zu uns
+          So können wir Ihr Anliegen klären
         </h2>
         <div className="mt-8 grid gap-5 lg:grid-cols-3">
           {contactPage.pathways.map((pathway, index) => {
@@ -166,7 +166,7 @@ export default function KontaktPage() {
               className="flex gap-3 rounded-2xl border border-border bg-surface p-4"
             >
               <span
-                className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand font-display font-bold text-white"
+                className="flex size-10 shrink-0 items-center justify-center rounded-full bg-brand-dark font-display font-bold text-white"
                 aria-hidden="true"
               >
                 {index + 1}
@@ -178,7 +178,8 @@ export default function KontaktPage() {
       </section>
 
       <section
-        className="border-t border-border bg-surface py-12"
+        id="erstkontakt"
+        className="scroll-mt-32 border-t border-border bg-surface py-12"
         aria-labelledby="first-call-heading"
       >
         <div className="mx-auto max-w-6xl px-4 sm:px-6">

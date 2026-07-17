@@ -1,5 +1,13 @@
 import { Reveal } from "@/components/reveal";
+import type { RevealVariant } from "@/components/reveal";
 import { startSteps } from "@/content/site-content";
+
+const variants: RevealVariant[] = [
+  "slide-left",
+  "slide-right",
+  "slide-left",
+  "slide-right",
+];
 
 export function HowItStarts() {
   return (
@@ -8,7 +16,7 @@ export function HowItStarts() {
       aria-labelledby="steps-heading"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
-        <Reveal>
+        <Reveal variant="fade-soft">
           <div className="max-w-2xl">
             <p className="text-sm font-bold uppercase tracking-wide text-brand-dark">
               So beginnt die Unterstützung
@@ -41,12 +49,11 @@ export function HowItStarts() {
                 } ${index < 2 ? "border-b" : ""} ${
                   index === 1 || index === 2 ? "bg-[#fcfdfe]" : "bg-surface"
                 }`}
-                tabIndex={0}
               >
-                <Reveal>
+                <Reveal variant={variants[index]} delay={index * 90}>
                   <div className="flex gap-4">
                     <span
-                      className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-brand font-display text-lg font-extrabold text-white"
+                      className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-brand-dark font-display text-lg font-extrabold text-white"
                       aria-hidden="true"
                     >
                       {item.step}

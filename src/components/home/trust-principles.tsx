@@ -1,5 +1,8 @@
 import { Reveal } from "@/components/reveal";
+import type { RevealVariant } from "@/components/reveal";
 import { principles } from "@/content/site-content";
+
+const variants: RevealVariant[] = ["slide-left", "scale-in", "slide-right"];
 
 export function TrustPrinciples() {
   return (
@@ -7,7 +10,7 @@ export function TrustPrinciples() {
       className="mx-auto max-w-6xl px-4 py-14 sm:px-6"
       aria-labelledby="principles-heading"
     >
-      <Reveal>
+      <Reveal variant="fade-soft">
         <div className="max-w-2xl">
           <p className="text-sm font-bold uppercase tracking-wide text-brand-dark">
             Unser Weg
@@ -46,19 +49,19 @@ export function TrustPrinciples() {
                   : ""
               }`}
             >
-              <Reveal>
+              <Reveal variant={variants[index] ?? "wave-rise"} delay={index * 100}>
                 <div
-                  className={`rounded-2xl bg-white/8 p-4 backdrop-blur-sm ${
+                  className={`rounded-2xl bg-white/10 p-4 backdrop-blur-sm ${
                     index === 1 ? "md:-translate-y-2" : ""
                   } ${index === 2 ? "md:translate-y-2" : ""}`}
                 >
                   <span className="font-display text-sm font-bold text-highlight">
                     0{index + 1}
                   </span>
-                  <h3 className="mt-2 font-display text-xl font-extrabold">
+                  <h3 className="mt-2 font-display text-xl font-extrabold text-white">
                     {item.title}
                   </h3>
-                  <p className="mt-2 text-base text-white/80">{item.text}</p>
+                  <p className="mt-2 text-base text-white/85">{item.text}</p>
                 </div>
               </Reveal>
             </li>

@@ -22,7 +22,10 @@ export default function LeistungenPage() {
   return (
     <main id="hauptinhalt">
       <section className="relative overflow-hidden bg-gradient-to-br from-surface-soft via-background to-[#fff4ef] py-12 sm:py-16">
-        <div className="pointer-events-none absolute -right-10 top-8 h-40 w-40 rounded-full bg-brand/20 blur-2xl" aria-hidden="true" />
+        <div
+          className="pointer-events-none absolute -right-10 top-8 h-40 w-40 rounded-full bg-brand/20 blur-2xl"
+          aria-hidden="true"
+        />
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <p className="text-sm font-bold uppercase tracking-wide text-brand-dark">
             Leistungen
@@ -51,7 +54,11 @@ export default function LeistungenPage() {
 
         <div className="mt-8 space-y-8">
           {servicesPage.needGroups.map((group, index) => (
-            <Reveal key={group.id}>
+            <Reveal
+              key={group.id}
+              variant={index % 2 === 0 ? "slide-left" : "slide-right"}
+              delay={index * 60}
+            >
               <article
                 className={`rounded-[1.75rem] border border-border p-5 sm:p-7 ${
                   index % 2 === 0 ? "bg-surface" : "bg-surface-soft/70"
@@ -98,35 +105,26 @@ export default function LeistungenPage() {
         <div className="mx-auto max-w-6xl px-4 sm:px-6">
           <h2
             id="all-services-heading"
-            className="font-display text-3xl font-extrabold"
+            className="font-display text-3xl font-extrabold text-white"
           >
             Alle Leistungen im Überblick
           </h2>
-          <p className="mt-3 max-w-2xl text-white/80">
-            Bis zu acht Leistungen – verständlich erklärt und gemeinsam auf einer Seite.
+          <p className="mt-3 max-w-2xl text-white/85">
+            Die wichtigsten Unterstützungsbereiche auf einen Blick.
           </p>
-          <ul className="mt-8 grid gap-4 sm:grid-cols-2">
-            {services.map((service, index) => (
+          <ul className="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {services.map((service) => (
               <li
                 key={service.id}
-                className={`rounded-2xl border border-white/15 p-4 ${
-                  index % 3 === 0
-                    ? "bg-white/8"
-                    : index % 3 === 1
-                      ? "bg-brand/25"
-                      : "bg-accent/20"
-                }`}
+                className="flex min-h-12 items-center gap-2.5 rounded-xl border border-white/15 bg-white/8 px-3.5 py-3"
               >
-                <div className="flex gap-3">
-                  <Check
-                    className="mt-1 size-5 shrink-0 text-highlight"
-                    aria-hidden="true"
-                  />
-                  <div>
-                    <h3 className="font-display text-lg font-bold">{service.title}</h3>
-                    <p className="mt-1 text-white/80">{service.text}</p>
-                  </div>
-                </div>
+                <Check
+                  className="size-5 shrink-0 text-highlight"
+                  aria-hidden="true"
+                />
+                <span className="font-display text-sm font-bold leading-snug text-white sm:text-base">
+                  {service.title}
+                </span>
               </li>
             ))}
           </ul>
@@ -164,7 +162,7 @@ export default function LeistungenPage() {
           </p>
           <a
             href={contact.phoneHref}
-            className="mt-6 inline-flex items-center justify-center gap-3 font-display text-3xl font-extrabold text-accent-dark hover:text-accent sm:text-4xl"
+            className="mt-6 inline-flex items-center justify-center gap-3 font-display text-3xl font-extrabold text-accent-dark hover:text-[#a83c2f] sm:text-4xl"
           >
             <Phone className="size-8" aria-hidden="true" />
             {contact.phoneDisplay}

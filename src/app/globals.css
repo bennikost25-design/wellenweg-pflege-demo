@@ -15,6 +15,11 @@
   --border: #c5d8e0;
   --focus-ring: #0b7f8c;
   --wave: #12a8b8;
+  --reveal-ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --reveal-duration: 800ms;
+  --reveal-delay: 0ms;
+  --reveal-x: 72px;
+  --reveal-y: 56px;
 }
 
 @theme inline {
@@ -49,6 +54,18 @@ html {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+
+  .wave-float,
+  .wave-drift {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --reveal-x: 28px;
+    --reveal-y: 28px;
   }
 }
 
@@ -96,6 +113,10 @@ h4 {
   animation: wave-float 8s ease-in-out infinite;
 }
 
+.wave-drift {
+  animation: wave-drift 14s ease-in-out infinite;
+}
+
 @keyframes wave-float {
   0%,
   100% {
@@ -106,21 +127,58 @@ h4 {
   }
 }
 
+@keyframes wave-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0);
+  }
+  50% {
+    transform: translate3d(-10px, 6px, 0);
+  }
+}
+
+/* Visible by default – animation only after .reveal-ready is set on the client */
 .reveal {
   opacity: 1;
   transform: none;
+  filter: none;
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .reveal {
-    opacity: 0;
-    transform: translateY(12px);
+  .reveal.reveal-ready {
     transition:
-      opacity 0.55s ease,
-      transform 0.55s ease;
+      opacity var(--reveal-duration) var(--reveal-ease),
+      transform var(--reveal-duration) var(--reveal-ease);
+    transition-delay: var(--reveal-delay);
+    will-change: opacity, transform;
   }
 
-  .reveal.is-visible {
+  .reveal.reveal-ready.reveal-slide-left:not(.is-visible) {
+    opacity: 0;
+    transform: translate3d(calc(var(--reveal-x) * -1), 12px, 0) rotate(-1.5deg);
+  }
+
+  .reveal.reveal-ready.reveal-slide-right:not(.is-visible) {
+    opacity: 0;
+    transform: translate3d(var(--reveal-x), 12px, 0) rotate(1.5deg);
+  }
+
+  .reveal.reveal-ready.reveal-scale-in:not(.is-visible) {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0) scale(0.94) rotate(-1deg);
+  }
+
+  .reveal.reveal-ready.reveal-wave-rise:not(.is-visible) {
+    opacity: 0;
+    transform: translate3d(0, var(--reveal-y), 0) rotate(0.8deg);
+  }
+
+  .reveal.reveal-ready.reveal-fade-soft:not(.is-visible) {
+    opacity: 0;
+    transform: translate3d(0, 16px, 0);
+  }
+
+  .reveal.reveal-ready.is-visible {
     opacity: 1;
     transform: none;
   }
@@ -134,8 +192,41 @@ h4 {
 }
 
 @media (prefers-reduced-motion: no-preference) {
-  .step-panel:hover,
-  .step-panel:focus-within {
+  .step-panel:hover {
     transform: translateY(-2px);
+  }
+}
+
+.draw-path.is-drawn {
+  stroke-dashoffset: 0 !important;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .draw-path {
+    transition: stroke-dashoffset 1.1s var(--reveal-ease);
+  }
+}
+
+.marker-pop {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .marker-pop.is-armed:not(.is-visible) {
+    opacity: 0;
+    transform: scale(0.6);
+  }
+
+  .marker-pop.is-armed {
+    transition:
+      opacity 0.45s var(--reveal-ease),
+      transform 0.45s var(--reveal-ease);
+    transition-delay: var(--reveal-delay, 0ms);
+  }
+
+  .marker-pop.is-armed.is-visible {
+    opacity: 1;
+    transform: none;
   }
 }
