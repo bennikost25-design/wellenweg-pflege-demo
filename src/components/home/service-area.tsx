@@ -125,7 +125,7 @@ export function ServiceArea() {
 
   return (
     <section
-      className="mx-auto max-w-6xl px-4 py-14 sm:px-6"
+      className="mx-auto max-w-6xl overflow-x-clip px-4 py-14 sm:px-6"
       aria-labelledby="area-heading"
     >
       <div className="grid items-center gap-10 lg:grid-cols-[1fr_1.1fr]">

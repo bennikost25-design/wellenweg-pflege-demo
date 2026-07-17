@@ -7,7 +7,7 @@ const variants: RevealVariant[] = ["slide-left", "scale-in", "slide-right"];
 export function TrustPrinciples() {
   return (
     <section
-      className="mx-auto max-w-6xl px-4 py-14 sm:px-6"
+      className="mx-auto max-w-6xl overflow-x-clip px-4 py-14 sm:px-6"
       aria-labelledby="principles-heading"
     >
       <Reveal variant="fade-soft">

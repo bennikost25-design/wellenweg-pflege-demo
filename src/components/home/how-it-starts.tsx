@@ -12,7 +12,7 @@ const variants: RevealVariant[] = [
 export function HowItStarts() {
   return (
     <section
-      className="bg-gradient-to-b from-background to-surface-soft/80 py-14"
+      className="overflow-x-clip bg-gradient-to-b from-background to-surface-soft/80 py-14"
       aria-labelledby="steps-heading"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6">

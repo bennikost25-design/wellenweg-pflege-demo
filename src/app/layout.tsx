@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Nunito, Source_Sans_3 } from "next/font/google";
 import { DemoBanner } from "@/components/demo-banner";
 import { SiteFooter } from "@/components/site-footer";
@@ -36,6 +36,12 @@ export const metadata: Metadata = {
   manifest: "/manifest.webmanifest",
 };
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  viewportFit: "cover",
+};
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -46,12 +52,14 @@ export default function RootLayout({
       lang="de"
       className={`${nunito.variable} ${sourceSans.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col bg-background font-sans text-ink">
-        <SkipLink />
-        <DemoBanner />
-        <SiteHeader />
-        {children}
-        <SiteFooter />
+      <body className="bg-background font-sans text-ink">
+        <div className="flex min-h-full w-full max-w-full flex-col overflow-x-clip">
+          <SkipLink />
+          <DemoBanner />
+          <SiteHeader />
+          {children}
+          <SiteFooter />
+        </div>
       </body>
     </html>
   );

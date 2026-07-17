@@ -8,8 +8,8 @@ import {
 
 export function SiteFooter() {
   return (
-    <footer className="mt-auto border-t border-border bg-ink text-white">
-      <div className="mx-auto grid max-w-6xl gap-10 px-4 py-12 sm:px-6 md:grid-cols-[1.3fr_1fr_1fr]">
+    <footer className="mt-auto w-full max-w-full overflow-x-clip border-t border-border bg-ink text-white">
+      <div className="mx-auto grid max-w-6xl gap-10 px-3 py-12 sm:px-6 md:grid-cols-[1.3fr_1fr_1fr]">
         <div>
           <Link
             href="/"

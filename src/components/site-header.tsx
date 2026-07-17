@@ -83,18 +83,18 @@ export function SiteHeader() {
 
   return (
     <header
-      className={`sticky top-0 z-50 border-b border-border/80 bg-surface/95 backdrop-blur-md transition-[padding,box-shadow] ${
+      className={`sticky top-0 z-50 w-full max-w-full border-b border-border/80 bg-surface/95 backdrop-blur-md transition-[padding,box-shadow] ${
         compact ? "shadow-sm" : ""
       }`}
     >
       <div
-        className={`mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 sm:px-6 ${
+        className={`mx-auto flex w-full max-w-6xl items-center justify-between gap-2 px-3 sm:gap-4 sm:px-6 ${
           compact ? "py-2.5" : "py-3.5"
         }`}
       >
         <Link
           href="/"
-          className="min-w-0 rounded-lg focus-visible:outline-offset-4"
+          className="flex min-w-0 shrink rounded-lg focus-visible:outline-offset-4"
           aria-label="Wellenweg Pflege – zur Startseite"
         >
           <Logo compact={compact} />
@@ -130,10 +130,10 @@ export function SiteHeader() {
           </a>
         </nav>
 
-        <div className="flex items-center gap-2 lg:hidden">
+        <div className="flex shrink-0 items-center gap-2 lg:hidden">
           <a
             href={contact.phoneHref}
-            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full bg-accent-dark text-white hover:bg-[#a83c2f]"
+            className="inline-flex size-11 shrink-0 items-center justify-center rounded-full bg-accent-dark text-white hover:bg-[#a83c2f]"
             aria-label={`Anrufen: ${contact.phoneDisplay}`}
           >
             <Phone className="size-5" aria-hidden="true" />
@@ -141,17 +141,20 @@ export function SiteHeader() {
           <button
             ref={buttonRef}
             type="button"
-            className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-ink/15 bg-surface px-3.5 text-sm font-semibold text-ink"
+            className="inline-flex min-h-11 shrink-0 items-center gap-1.5 rounded-full border-2 border-ink/15 bg-surface px-2.5 text-sm font-semibold text-ink sm:gap-2 sm:px-3.5"
             aria-expanded={open}
             aria-controls={menuId}
+            aria-label={open ? "Menü schließen" : "Menü öffnen"}
             onClick={() => setOpen((value) => !value)}
           >
             {open ? (
-              <X className="size-5" aria-hidden="true" />
+              <X className="size-5 shrink-0" aria-hidden="true" />
             ) : (
-              <Menu className="size-5" aria-hidden="true" />
+              <Menu className="size-5 shrink-0" aria-hidden="true" />
             )}
-            <span>{open ? "Schließen" : "Menü"}</span>
+            <span className="hidden min-[360px]:inline">
+              {open ? "Schließen" : "Menü"}
+            </span>
           </button>
         </div>
       </div>
@@ -160,9 +163,12 @@ export function SiteHeader() {
         <div
           id={menuId}
           ref={panelRef}
-          className="border-t border-border bg-surface lg:hidden"
+          className="w-full max-w-full border-t border-border bg-surface lg:hidden"
         >
-          <nav aria-label="Mobile Navigation" className="mx-auto max-w-6xl px-4 py-4 sm:px-6">
+          <nav
+            aria-label="Mobile Navigation"
+            className="mx-auto max-w-6xl px-3 py-4 sm:px-6"
+          >
             <ul className="flex flex-col gap-1">
               {navigation.map((item) => (
                 <li key={item.href}>
@@ -185,8 +191,8 @@ export function SiteHeader() {
               href={contact.phoneHref}
               className="mt-4 flex min-h-12 items-center justify-center gap-2 rounded-xl bg-accent-dark px-4 text-lg font-bold text-white hover:bg-[#a83c2f]"
             >
-              <Phone className="size-5" aria-hidden="true" />
-              {contact.phoneDisplay}
+              <Phone className="size-5 shrink-0" aria-hidden="true" />
+              <span className="break-all">{contact.phoneDisplay}</span>
             </a>
           </nav>
         </div>

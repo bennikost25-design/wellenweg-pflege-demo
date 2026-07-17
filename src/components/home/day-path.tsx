@@ -111,7 +111,7 @@ export function DayPath() {
 
   return (
     <section
-      className="mx-auto max-w-6xl px-4 py-14 sm:px-6"
+      className="mx-auto max-w-6xl overflow-x-clip px-4 py-14 sm:px-6"
       aria-labelledby="daypath-heading"
     >
       <Reveal variant="fade-soft">

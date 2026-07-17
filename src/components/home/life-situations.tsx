@@ -16,7 +16,7 @@ export function LifeSituations() {
   return (
     <section
       id="situationen"
-      className="scroll-mt-32 bg-surface-soft/60 py-14"
+      className="scroll-mt-32 overflow-x-clip bg-surface-soft/60 py-14"
       aria-labelledby="situations-heading"
     >
       <div className="mx-auto max-w-6xl px-4 sm:px-6">
