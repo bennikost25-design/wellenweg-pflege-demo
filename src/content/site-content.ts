@@ -75,9 +75,9 @@ export const homeHero = {
     },
     {
       id: "orientierung",
-      title: "Ich brauche kurzfristig Orientierung",
-      text: "Wenn Sie erst einmal wissen möchten, welche Unterstützung überhaupt möglich ist.",
-      href: "/kontakt#erstkontakt",
+      title: "Ich brauche Unterstützung nach einem Krankenhausaufenthalt",
+      text: "Wenn zu Hause kurzfristig Pflege, Medikamente oder Wundversorgung organisiert werden müssen.",
+      href: "#krankenhaus",
       accent: "highlight" as const,
     },
   ],
