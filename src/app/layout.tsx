@@ -52,8 +52,8 @@ export default function RootLayout({
       lang="de"
       className={`${nunito.variable} ${sourceSans.variable} h-full antialiased`}
     >
-      <body className="bg-background font-sans text-ink">
-        <div className="flex min-h-full w-full max-w-full flex-col overflow-x-clip">
+      <body className="flex min-h-full flex-col bg-background font-sans text-ink">
+        <div className="flex min-h-full w-full max-w-full flex-1 flex-col overflow-x-clip">
           <SkipLink />
           <DemoBanner />
           <SiteHeader />
