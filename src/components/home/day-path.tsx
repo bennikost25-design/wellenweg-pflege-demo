@@ -154,7 +154,11 @@ export function DayPath() {
                   {index + 1}
                 </span>
 
-                <Reveal variant={stationVariants[index]} delay={80 + index * 90}>
+                <Reveal
+                  variant={stationVariants[index]}
+                  delay={80 + index * 90}
+                  replay
+                >
                   <article className="rounded-2xl border border-border bg-surface p-4">
                     <p className="font-display text-sm font-bold text-accent-dark">
                       {station.time}
@@ -201,14 +205,14 @@ export function DayPath() {
               />
             </svg>
 
-            <ol className="relative grid grid-cols-3 gap-5">
+            <ol className="relative grid grid-cols-3 gap-0">
               {dayPath.stations.map((station, index) => {
                 const point = desktopStations[index];
 
                 return (
                   <li
                     key={station.time}
-                    className="relative"
+                    className="relative px-2.5"
                     style={{ paddingTop: point.cardPad }}
                   >
                     <span
@@ -220,7 +224,11 @@ export function DayPath() {
                     >
                       {index + 1}
                     </span>
-                    <Reveal variant={stationVariants[index]} delay={160 + index * 110}>
+                    <Reveal
+                      variant={stationVariants[index]}
+                      delay={160 + index * 110}
+                      replay
+                    >
                       <article className="rounded-[1.5rem] border border-border bg-surface p-5 shadow-[0_16px_40px_-28px_rgba(12,45,74,0.45)]">
                         <p className="font-display text-sm font-bold text-accent-dark">
                           {station.time}

@@ -16,7 +16,14 @@ type RevealProps = {
   as?: "div" | "section" | "article" | "li";
   variant?: RevealVariant;
   delay?: number;
+  /** When true, animate out when leaving the viewport and replay on re-entry. */
+  replay?: boolean;
 };
+
+function hasFocusWithin(node: Element) {
+  const active = document.activeElement;
+  return Boolean(active && (active === node || node.contains(active)));
+}
 
 export function Reveal({
   children,
@@ -24,6 +31,7 @@ export function Reveal({
   as: Tag = "div",
   variant = "wave-rise",
   delay = 0,
+  replay = false,
 }: RevealProps) {
   const ref = useRef<HTMLElement | null>(null);
 
@@ -42,21 +50,50 @@ export function Reveal({
       node.style.setProperty("--reveal-delay", `${delay}ms`);
     }
 
+    if (!replay) {
+      const observer = new IntersectionObserver(
+        (entries) => {
+          entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+              entry.target.classList.add("is-visible");
+              observer.unobserve(entry.target);
+            }
+          });
+        },
+        { threshold: 0.12, rootMargin: "0px 0px -36px 0px" },
+      );
+
+      observer.observe(node);
+      return () => observer.disconnect();
+    }
+
+    const SHOW_AT = 0.18;
+    const HIDE_AT = 0.06;
+
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
-          if (entry.isIntersecting) {
-            entry.target.classList.add("is-visible");
-            observer.unobserve(entry.target);
+          const ratio = entry.intersectionRatio;
+
+          if (ratio >= SHOW_AT) {
+            node.classList.remove("is-reversing");
+            node.classList.add("is-visible");
+            return;
+          }
+
+          if (ratio <= HIDE_AT) {
+            if (hasFocusWithin(node)) return;
+            node.classList.add("is-reversing");
+            node.classList.remove("is-visible");
           }
         });
       },
-      { threshold: 0.12, rootMargin: "0px 0px -36px 0px" },
+      { threshold: [0, HIDE_AT, SHOW_AT] },
     );
 
     observer.observe(node);
     return () => observer.disconnect();
-  }, [variant, delay]);
+  }, [variant, delay, replay]);
 
   return (
     <Tag

@@ -58,6 +58,7 @@ export default function LeistungenPage() {
               key={group.id}
               variant={index % 2 === 0 ? "slide-left" : "slide-right"}
               delay={index * 60}
+              replay
             >
               <article
                 className={`rounded-[1.75rem] border border-border p-5 sm:p-7 ${

@@ -132,6 +132,7 @@ export function HomeHero() {
                   as="li"
                   variant="slide-right"
                   delay={80 + index * 100}
+                  replay
                   className={`relative rounded-2xl border-2 p-4 shadow-[0_12px_30px_-18px_rgba(12,45,74,0.35)] sm:p-5 ${
                     accentStyles[entry.accent]
                   } ${index === 1 ? "md:ml-8" : ""} ${index === 2 ? "md:ml-4" : ""}`}

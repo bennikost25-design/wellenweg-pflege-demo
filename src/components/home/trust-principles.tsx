@@ -49,7 +49,11 @@ export function TrustPrinciples() {
                   : ""
               }`}
             >
-              <Reveal variant={variants[index] ?? "wave-rise"} delay={index * 100}>
+              <Reveal
+                variant={variants[index] ?? "wave-rise"}
+                delay={index * 100}
+                replay
+              >
                 <div
                   className={`rounded-2xl bg-white/10 p-4 backdrop-blur-sm ${
                     index === 1 ? "md:-translate-y-2" : ""

@@ -160,7 +160,7 @@ export function ServiceArea() {
           </div>
         </Reveal>
 
-        <Reveal variant="scale-in" delay={80}>
+        <Reveal variant="scale-in" delay={80} replay>
           <figure
             ref={mapRef as never}
             className="overflow-hidden rounded-[1.75rem] border border-border bg-gradient-to-br from-surface-soft to-[#dff3f6] p-3 sm:p-6"

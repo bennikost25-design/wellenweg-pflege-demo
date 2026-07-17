@@ -152,6 +152,11 @@ h4 {
     will-change: opacity, transform;
   }
 
+  .reveal.reveal-ready.is-reversing {
+    transition-duration: 550ms;
+    transition-delay: 0ms;
+  }
+
   .reveal.reveal-ready.reveal-slide-left:not(.is-visible) {
     opacity: 0;
     transform: translate3d(calc(var(--reveal-x) * -1), 12px, 0) rotate(-1.5deg);

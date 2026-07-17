@@ -43,6 +43,7 @@ export function LifeSituations() {
               key={situation.id}
               variant={variants[index] ?? "slide-left"}
               delay={index * 80}
+              replay
             >
               <article
                 id={situation.id}

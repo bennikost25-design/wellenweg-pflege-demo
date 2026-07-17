@@ -50,7 +50,7 @@ export function HowItStarts() {
                   index === 1 || index === 2 ? "bg-[#fcfdfe]" : "bg-surface"
                 }`}
               >
-                <Reveal variant={variants[index]} delay={index * 90}>
+                <Reveal variant={variants[index]} delay={index * 90} replay>
                   <div className="flex gap-4">
                     <span
                       className="flex size-12 shrink-0 items-center justify-center rounded-2xl bg-brand-dark font-display text-lg font-extrabold text-white"
