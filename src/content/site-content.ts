@@ -114,6 +114,15 @@ export const lifeSituations = [
     ],
   },
   {
+    id: "entlastung",
+    title: "Angehörige brauchen Entlastung",
+    support: [
+      "Stundenweise Betreuung",
+      "Verhinderungspflege",
+      "Beratung und gemeinsame Planung",
+    ],
+  },
+  {
     id: "krankenhaus",
     title: "Nach einem Krankenhausaufenthalt",
     support: [
@@ -121,15 +130,6 @@ export const lifeSituations = [
       "Medikamentengabe",
       "Wundversorgung",
       "Unterstützung beim Wiedereinstieg zu Hause",
-    ],
-  },
-  {
-    id: "entlastung",
-    title: "Angehörige brauchen Entlastung",
-    support: [
-      "Stundenweise Betreuung",
-      "Verhinderungspflege",
-      "Beratung und gemeinsame Planung",
     ],
   },
 ] as const;
