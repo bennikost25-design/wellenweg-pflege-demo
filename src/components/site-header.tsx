@@ -1,0 +1,169 @@
+"use client";
+
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { Menu, Phone, X } from "lucide-react";
+import { useEffect, useId, useRef, useState } from "react";
+import { Logo } from "@/components/logo";
+import { contact, navigation } from "@/content/site-content";
+
+export function SiteHeader() {
+  const pathname = usePathname();
+  const [open, setOpen] = useState(false);
+  const [compact, setCompact] = useState(false);
+  const [navPath, setNavPath] = useState(pathname);
+  const menuId = useId();
+  const buttonRef = useRef<HTMLButtonElement>(null);
+  const panelRef = useRef<HTMLDivElement>(null);
+
+  if (navPath !== pathname) {
+    setNavPath(pathname);
+    if (open) setOpen(false);
+  }
+
+  useEffect(() => {
+    const onScroll = () => setCompact(window.scrollY > 24);
+    onScroll();
+    window.addEventListener("scroll", onScroll, { passive: true });
+    return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        setOpen(false);
+        buttonRef.current?.focus();
+      }
+    };
+
+    const previousOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    document.addEventListener("keydown", onKeyDown);
+
+    const firstLink = panelRef.current?.querySelector<HTMLElement>("a");
+    firstLink?.focus();
+
+    return () => {
+      document.body.style.overflow = previousOverflow;
+      document.removeEventListener("keydown", onKeyDown);
+    };
+  }, [open]);
+
+  const isActive = (href: string) =>
+    href === "/" ? pathname === "/" : pathname.startsWith(href);
+
+  return (
+    <header
+      className={`sticky top-0 z-50 border-b border-border/80 bg-surface/95 backdrop-blur-md transition-[padding,box-shadow] ${
+        compact ? "shadow-sm" : ""
+      }`}
+    >
+      <div
+        className={`mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 sm:px-6 ${
+          compact ? "py-2.5" : "py-3.5"
+        }`}
+      >
+        <Link
+          href="/"
+          className="min-w-0 rounded-lg focus-visible:outline-offset-4"
+          aria-label="Wellenweg Pflege – zur Startseite"
+        >
+          <Logo compact={compact} />
+        </Link>
+
+        <nav
+          className="hidden items-center gap-1 lg:flex"
+          aria-label="Hauptnavigation"
+        >
+          <ul className="flex items-center gap-1">
+            {navigation.map((item) => (
+              <li key={item.href}>
+                <Link
+                  href={item.href}
+                  className={`inline-flex min-h-11 items-center rounded-full px-4 text-base font-semibold transition-colors ${
+                    isActive(item.href)
+                      ? "bg-surface-soft text-brand-dark"
+                      : "text-ink-muted hover:bg-surface-soft hover:text-ink"
+                  }`}
+                  aria-current={isActive(item.href) ? "page" : undefined}
+                >
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <a
+            href={contact.phoneHref}
+            className="ml-3 inline-flex min-h-11 items-center gap-2 rounded-full bg-accent px-4 text-base font-bold text-white transition-colors hover:bg-accent-dark"
+          >
+            <Phone className="size-4 shrink-0" aria-hidden="true" />
+            <span className="whitespace-nowrap">{contact.phoneDisplay}</span>
+          </a>
+        </nav>
+
+        <div className="flex items-center gap-2 lg:hidden">
+          <a
+            href={contact.phoneHref}
+            className="inline-flex min-h-11 min-w-11 items-center justify-center rounded-full bg-accent text-white hover:bg-accent-dark"
+            aria-label={`Anrufen: ${contact.phoneDisplay}`}
+          >
+            <Phone className="size-5" aria-hidden="true" />
+          </a>
+          <button
+            ref={buttonRef}
+            type="button"
+            className="inline-flex min-h-11 items-center gap-2 rounded-full border-2 border-ink/15 bg-surface px-3.5 text-sm font-semibold text-ink"
+            aria-expanded={open}
+            aria-controls={menuId}
+            onClick={() => setOpen((value) => !value)}
+          >
+            {open ? (
+              <X className="size-5" aria-hidden="true" />
+            ) : (
+              <Menu className="size-5" aria-hidden="true" />
+            )}
+            <span>{open ? "Schließen" : "Menü"}</span>
+          </button>
+        </div>
+      </div>
+
+      {open ? (
+        <div
+          id={menuId}
+          ref={panelRef}
+          className="border-t border-border bg-surface lg:hidden"
+        >
+          <nav aria-label="Mobile Navigation" className="mx-auto max-w-6xl px-4 py-4 sm:px-6">
+            <ul className="flex flex-col gap-1">
+              {navigation.map((item) => (
+                <li key={item.href}>
+                  <Link
+                    href={item.href}
+                    className={`flex min-h-12 items-center rounded-xl px-4 text-lg font-semibold ${
+                      isActive(item.href)
+                        ? "bg-surface-soft text-brand-dark"
+                        : "text-ink hover:bg-surface-soft"
+                    }`}
+                    aria-current={isActive(item.href) ? "page" : undefined}
+                    onClick={() => setOpen(false)}
+                  >
+                    {item.label}
+                  </Link>
+                </li>
+              ))}
+            </ul>
+            <a
+              href={contact.phoneHref}
+              className="mt-4 flex min-h-12 items-center justify-center gap-2 rounded-xl bg-accent px-4 text-lg font-bold text-white"
+            >
+              <Phone className="size-5" aria-hidden="true" />
+              {contact.phoneDisplay}
+            </a>
+          </nav>
+        </div>
+      ) : null}
+    </header>
+  );
+}
