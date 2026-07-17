@@ -86,10 +86,7 @@ export function ServiceArea() {
     const markers = markerRefs.current.filter(Boolean) as SVGGElement[];
 
     const showAll = () => {
-      lines.forEach((line) => {
-        line.style.strokeDashoffset = "0";
-        line.classList.add("is-drawn");
-      });
+      lines.forEach((line) => line.classList.add("is-visible"));
       markers.forEach((marker) => marker.classList.add("is-visible"));
     };
 
@@ -98,16 +95,14 @@ export function ServiceArea() {
       return;
     }
 
-    lines.forEach((line) => {
-      const length = line.getTotalLength();
-      line.style.strokeDasharray = `${length}`;
-      line.style.strokeDashoffset = `${length}`;
-      line.classList.add("draw-path");
+    lines.forEach((line, index) => {
+      line.classList.add("area-line-ready");
+      line.style.setProperty("--line-delay", `${index * 110}ms`);
     });
 
     markers.forEach((marker, index) => {
       marker.classList.add("marker-pop", "is-armed");
-      marker.style.setProperty("--reveal-delay", `${220 + index * 90}ms`);
+      marker.style.setProperty("--reveal-delay", `${200 + index * 90}ms`);
     });
 
     const observer = new IntersectionObserver(
@@ -200,14 +195,15 @@ export function ServiceArea() {
                     ref={(el) => {
                       lineRefs.current[index] = el;
                     }}
+                    className="area-line"
                     x1={from.x}
                     y1={from.y}
                     x2={to.x}
                     y2={to.y}
                     stroke="#0B7F8C"
                     strokeWidth="2.5"
+                    strokeDasharray="5 6"
                     strokeLinecap="round"
-                    opacity="0.7"
                   />
                 );
               })}
@@ -221,6 +217,7 @@ export function ServiceArea() {
                     ref={(el) => {
                       markerRefs.current[index] = el;
                     }}
+                    className="marker-pop"
                   >
                     {isCenter ? (
                       <circle

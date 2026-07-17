@@ -1,17 +1,55 @@
 "use client";
 
-import { useEffect, useRef } from "react";
+import { useEffect, useMemo, useRef } from "react";
 import { Reveal } from "@/components/reveal";
 import type { RevealVariant } from "@/components/reveal";
 import { dayPath } from "@/content/site-content";
 
 const stationVariants: RevealVariant[] = ["slide-left", "scale-in", "slide-right"];
 
+/** Shared SVG coordinate system for desktop path + markers */
+const DESKTOP_SVG = { width: 1000, height: 160 } as const;
+
+/**
+ * Marker centers in SVG space (= column centers of a 3-col grid).
+ * Path, markers and cards all derive from these values.
+ */
+const desktopStations = [
+  { x: DESKTOP_SVG.width / 6, y: 42, cardPad: 96 },
+  { x: DESKTOP_SVG.width / 2, y: 108, cardPad: 162 },
+  { x: (DESKTOP_SVG.width * 5) / 6, y: 48, cardPad: 102 },
+] as const;
+
+const DESKTOP_MARKER_RADIUS = 24; // size-12 / 2
+
+function buildWavePath(
+  points: readonly { x: number; y: number }[],
+): string {
+  const [a, b, c] = points;
+  const c1x = a.x + (b.x - a.x) * 0.45;
+  const c2x = b.x - (b.x - a.x) * 0.45;
+  const c3x = b.x + (c.x - b.x) * 0.45;
+  const c4x = c.x - (c.x - b.x) * 0.45;
+
+  return [
+    `M ${a.x} ${a.y}`,
+    `C ${c1x} ${a.y}, ${c2x} ${b.y}, ${b.x} ${b.y}`,
+    `C ${c3x} ${b.y}, ${c4x} ${c.y}, ${c.x} ${c.y}`,
+  ].join(" ");
+}
+
+const mobileLinkColors = [
+  "from-brand-dark to-accent-dark",
+  "from-accent-dark to-highlight-strong",
+] as const;
+
 export function DayPath() {
   const sectionRef = useRef<HTMLDivElement | null>(null);
   const solidRef = useRef<SVGPathElement | null>(null);
   const dashedRef = useRef<SVGPathElement | null>(null);
-  const mobileTrackRef = useRef<HTMLDivElement | null>(null);
+  const mobileLinkRefs = useRef<(HTMLSpanElement | null)[]>([]);
+
+  const wavePath = useMemo(() => buildWavePath(desktopStations), []);
 
   useEffect(() => {
     const root = sectionRef.current;
@@ -20,21 +58,22 @@ export function DayPath() {
     const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     const solid = solidRef.current;
     const dashed = dashedRef.current;
+    const mobileLinks = mobileLinkRefs.current.filter(Boolean) as HTMLSpanElement[];
 
-    const revealPaths = () => {
+    const revealAll = () => {
       if (solid) {
         solid.style.strokeDashoffset = "0";
         solid.classList.add("is-drawn");
       }
       if (dashed) {
         dashed.style.opacity = "0.9";
-        dashed.classList.add("is-drawn");
+        dashed.classList.add("is-visible");
       }
-      mobileTrackRef.current?.classList.add("is-drawn");
+      mobileLinks.forEach((link) => link.classList.add("is-grown"));
     };
 
     if (reduced || typeof IntersectionObserver === "undefined") {
-      revealPaths();
+      revealAll();
       return;
     }
 
@@ -46,15 +85,19 @@ export function DayPath() {
     }
 
     if (dashed) {
-      dashed.style.opacity = "0";
-      dashed.style.transition = "opacity 0.7s cubic-bezier(0.22, 1, 0.36, 1) 0.35s";
+      dashed.classList.add("daypath-dash-ready");
     }
+
+    mobileLinks.forEach((link, index) => {
+      link.classList.add("is-armed");
+      link.style.setProperty("--link-delay", `${index * 160}ms`);
+    });
 
     const observer = new IntersectionObserver(
       (entries) => {
         entries.forEach((entry) => {
           if (entry.isIntersecting) {
-            revealPaths();
+            revealAll();
             observer.disconnect();
           }
         });
@@ -87,49 +130,60 @@ export function DayPath() {
       </Reveal>
 
       <div ref={sectionRef}>
-        {/* Mobile */}
+        {/* Mobile: only <li> children; connectors live inside each station */}
         <ol className="relative mt-10 space-y-5 md:hidden">
-          <div
-            ref={mobileTrackRef}
-            className="absolute bottom-6 left-5 top-6 w-1 -translate-x-1/2 origin-top scale-y-100 rounded-full bg-gradient-to-b from-brand-dark via-accent-dark to-highlight-strong"
-            aria-hidden="true"
-          />
-          {dayPath.stations.map((station, index) => (
-            <li key={station.time} className="relative pl-12">
-              <span
-                className="absolute left-0 top-2 z-10 flex size-10 items-center justify-center rounded-full border-4 border-background bg-brand-dark font-display text-sm font-bold text-white"
-                aria-hidden="true"
-              >
-                {index + 1}
-              </span>
-              <Reveal variant={stationVariants[index]} delay={80 + index * 90}>
-                <article className="rounded-2xl border border-border bg-surface p-4">
-                  <p className="font-display text-sm font-bold text-accent-dark">
-                    {station.time}
-                  </p>
-                  <h3 className="mt-1 font-display text-xl font-extrabold text-ink">
-                    {station.title}
-                  </h3>
-                  <p className="mt-2 text-ink-muted">{station.text}</p>
-                </article>
-              </Reveal>
-            </li>
-          ))}
+          {dayPath.stations.map((station, index) => {
+            const isLast = index === dayPath.stations.length - 1;
+
+            return (
+              <li key={station.time} className="relative pl-12">
+                {!isLast ? (
+                  <span
+                    ref={(el) => {
+                      mobileLinkRefs.current[index] = el;
+                    }}
+                    className={`daypath-mobile-link bg-gradient-to-b ${mobileLinkColors[index] ?? "from-brand-dark to-accent-dark"}`}
+                    aria-hidden="true"
+                  />
+                ) : null}
+
+                <span
+                  className="absolute left-0 top-2 z-10 flex size-10 items-center justify-center rounded-full border-4 border-background bg-brand-dark font-display text-sm font-bold text-white"
+                  aria-hidden="true"
+                >
+                  {index + 1}
+                </span>
+
+                <Reveal variant={stationVariants[index]} delay={80 + index * 90}>
+                  <article className="rounded-2xl border border-border bg-surface p-4">
+                    <p className="font-display text-sm font-bold text-accent-dark">
+                      {station.time}
+                    </p>
+                    <h3 className="mt-1 font-display text-xl font-extrabold text-ink">
+                      {station.title}
+                    </h3>
+                    <p className="mt-2 text-ink-muted">{station.text}</p>
+                  </article>
+                </Reveal>
+              </li>
+            );
+          })}
         </ol>
 
-        {/* Desktop */}
+        {/* Desktop: path + markers from shared station coordinates */}
         <div className="relative mt-14 hidden md:block">
-          <div className="relative min-h-[24rem]">
+          <div className="relative" style={{ minHeight: DESKTOP_SVG.height + 200 }}>
             <svg
-              className="pointer-events-none absolute inset-x-0 top-[4.6rem] h-40 w-full overflow-visible"
-              viewBox="0 0 1000 160"
+              className="pointer-events-none absolute inset-x-0 top-0 w-full overflow-visible"
+              style={{ height: DESKTOP_SVG.height }}
+              viewBox={`0 0 ${DESKTOP_SVG.width} ${DESKTOP_SVG.height}`}
               fill="none"
               aria-hidden="true"
               preserveAspectRatio="none"
             >
               <path
                 ref={solidRef}
-                d="M90 42 C 250 4, 330 4, 500 86 S 760 148, 910 52"
+                d={wavePath}
                 stroke="#0B7F8C"
                 strokeWidth="6"
                 strokeLinecap="round"
@@ -137,7 +191,7 @@ export function DayPath() {
               />
               <path
                 ref={dashedRef}
-                d="M90 42 C 250 4, 330 4, 500 86 S 760 148, 910 52"
+                d={wavePath}
                 stroke="#C94838"
                 strokeWidth="2.5"
                 strokeDasharray="8 10"
@@ -149,19 +203,19 @@ export function DayPath() {
 
             <ol className="relative grid grid-cols-3 gap-5">
               {dayPath.stations.map((station, index) => {
-                const markerTop =
-                  index === 0
-                    ? "top-[3.1rem]"
-                    : index === 1
-                      ? "top-[6.55rem]"
-                      : "top-[3.85rem]";
-                const cardPad =
-                  index === 0 ? "pt-[7.5rem]" : index === 1 ? "pt-[11rem]" : "pt-[8.25rem]";
+                const point = desktopStations[index];
 
                 return (
-                  <li key={station.time} className={`relative ${cardPad}`}>
+                  <li
+                    key={station.time}
+                    className="relative"
+                    style={{ paddingTop: point.cardPad }}
+                  >
                     <span
-                      className={`absolute left-1/2 z-20 flex size-12 -translate-x-1/2 items-center justify-center rounded-full bg-brand-dark font-display text-base font-bold text-white ring-[5px] ring-background shadow-md ${markerTop}`}
+                      className="absolute left-1/2 z-20 flex size-12 -translate-x-1/2 items-center justify-center rounded-full bg-brand-dark font-display text-base font-bold text-white ring-[5px] ring-background shadow-md"
+                      style={{
+                        top: point.y - DESKTOP_MARKER_RADIUS,
+                      }}
                       aria-hidden="true"
                     >
                       {index + 1}

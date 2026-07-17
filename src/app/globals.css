@@ -206,9 +206,78 @@ h4 {
   }
 }
 
+/* Mobile day-path connector segments – visible by default */
+.daypath-mobile-link {
+  position: absolute;
+  left: 1.25rem;
+  top: calc(0.5rem + 1.25rem);
+  z-index: 0;
+  width: 0.25rem;
+  height: calc(100% + 1.25rem);
+  transform: translateX(-50%) scaleY(1);
+  transform-origin: top center;
+  border-radius: 9999px;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .daypath-mobile-link.is-armed:not(.is-grown) {
+    transform: translateX(-50%) scaleY(0);
+  }
+
+  .daypath-mobile-link.is-armed {
+    transition: transform 0.75s var(--reveal-ease);
+    transition-delay: var(--link-delay, 0ms);
+  }
+
+  .daypath-mobile-link.is-armed.is-grown {
+    transform: translateX(-50%) scaleY(1);
+  }
+}
+
+/* Desktop dashed overlay – visible by default, opacity fade when armed */
+.daypath-dash-ready {
+  opacity: 0.9;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .daypath-dash-ready:not(.is-visible) {
+    opacity: 0;
+  }
+
+  .daypath-dash-ready {
+    transition: opacity 0.7s var(--reveal-ease) 0.35s;
+  }
+
+  .daypath-dash-ready.is-visible {
+    opacity: 0.9;
+  }
+}
+
+/* Service-area dashed lines – keep dash pattern, fade in when armed */
+.area-line {
+  opacity: 0.75;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .area-line.area-line-ready:not(.is-visible) {
+    opacity: 0;
+  }
+
+  .area-line.area-line-ready {
+    transition: opacity 0.55s var(--reveal-ease);
+    transition-delay: var(--line-delay, 0ms);
+  }
+
+  .area-line.area-line-ready.is-visible {
+    opacity: 0.75;
+  }
+}
+
 .marker-pop {
   opacity: 1;
   transform: none;
+  transform-box: fill-box;
+  transform-origin: center;
 }
 
 @media (prefers-reduced-motion: no-preference) {
